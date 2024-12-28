@@ -1,0 +1,104 @@
+﻿@{
+    ViewBag.Title = "Contact Us";
+}
+<link href="@Url.Content("~/css/contact.css")" rel="stylesheet">
+
+<header>
+    <div class="header-container">
+        <div class="logo">
+            <h2>Contact Us</h2>
+        </div>
+        <nav>
+            <ul>
+                <li class="nav-item">
+                    <a class="nav-button" href="@Url.Action("Login", "Home")">Login</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-button" href="@Url.Action("Chat", "Home")">Chat</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-button" href="@Url.Action("Index", "Home")">Home</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+</header>
+
+<div class="container mt-5 pt-5">
+    <div class="row">
+        <!-- Left Side Content -->
+        <div class="col-md-6">
+            <h1>Have a question?</h1>
+            <p>
+                We're Here to Help!
+                If you’ve lost or found an item, or need assistance with anything related to our Lost & Found Community, Whether you need help with your account, have questions about a lost item, or need tips on how to use our platform, our team is here for you. 
+
+                Our support team is always ready to assist you and ensure that you have the best experience while using our platform. 
+            </p>
+            <p>
+                Everyone gets a personalized response, so please allow 24 hours during business hours for a reply. Our business hours are M-F from 9am to 5pm PT.
+            </p>
+            <p><strong>Email:</strong> RASIKH@gmail.com</p>
+            <p><strong>Phone:</strong> 1 844-564-0382</p>
+            <p><strong>Chat:</strong> chat with us</p>
+        </div>
+
+        <!-- Right Side (Form) -->
+        <div class="col-md-6">
+            <!-- Display Error or Success Messages -->
+            @if (!string.IsNullOrEmpty(ViewBag.Error))
+            {
+                <div class="alert alert-danger">
+                    @ViewBag.Error
+                </div>
+            }
+
+            @if (!string.IsNullOrEmpty(ViewBag.Success))
+            {
+                <div class="alert alert-success">
+                    @ViewBag.Success
+                </div>
+            }
+
+            <!-- Form -->
+            @using (Html.BeginForm("Contact", "Home", FormMethod.Post))
+            {
+                <div class="form-group">
+                    <label for="firstName">First Name:</label>
+                    <input type="text" name="firstName" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="lastName">Last Name:</label>
+                    <input type="text" name="lastName" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email:</label>
+                    <input type="email" name="email" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="phoneNumber">Phone Number (optional):</label>
+                    <input type="text" name="phoneNumber" class="form-control" />
+                </div>
+
+                <div class="form-group">
+                    <label for="topic">Select Your Topic:</label>
+                    <select name="topic" class="form-control">
+                        <option value="">Select a topic</option>
+                        <option value="Order Issue">Order Issue</option>
+                        <option value="General Inquiry">General Inquiry</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="message">Message:</label>
+                    <textarea name="message" class="form-control"></textarea>
+                </div>
+
+                <button type="submit" class="btn btn-dark">Submit</button>
+            }
+        </div>
+    </div>
+</div>
