@@ -1,7 +1,15 @@
+using communityApp.Models; // Import your models namespace
+using Microsoft.Extensions.Configuration; // For configuration access
+using Microsoft.EntityFrameworkCore; // For Entity Framework Core
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddControllersWithViews();
+
+// Add the database context and configure the connection string
+builder.Services.AddDbContext<AppDbContext>(options =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 var app = builder.Build();
 
@@ -22,6 +30,7 @@ app.UseAuthorization();
 
 app.MapControllerRoute(
     name: "default",
-    pattern: "{controller=Home}/{action=Index}/{id?}");
+    pattern: "{controller=Home}/{action=Login}/{id?}");
+
 
 app.Run();
