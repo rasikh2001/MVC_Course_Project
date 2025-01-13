@@ -1,5 +1,6 @@
 using communityApp.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using System.Diagnostics;
 
 namespace communityApp.Controllers
@@ -16,36 +17,75 @@ namespace communityApp.Controllers
             _context = context;
         }
 
-        // Home page action
         public IActionResult Index()
         {
             return View();
         }
 
-        // Render the login page
         public IActionResult Login()
         {
             return View();
         }
 
-        // Handle login form submission
+        [HttpGet]
+        public IActionResult sign_Up()
+        {
+            return View();
+        }
+
+        
+        [HttpPost]    //CREATE OPERATION 
+        public IActionResult sign_up(User user)
+        {
+            if (ModelState.IsValid)
+            {
+              
+
+                _context.Users.Add(user);
+                _context.SaveChanges();
+
+                ViewBag.SuccessMessage = "Registration completed successfully! You can now log in.";
+                return RedirectToAction("Index");
+            }
+
+         
+            return View(user);
+        }
+
+        [HttpGet]
+              //READ OPERATION 
+        public IActionResult AdminPanel()
+        { 
+            var users = _context.Users.ToList();
+
+            return View(users);
+        }
+
+
         [HttpPost]
         public IActionResult Login(string username, string password)
         {
+            // Check if the user is admin
+            if (username == "admin" && password == "admin")
+            {
+                // Redirect to the AdminPanel view
+                return RedirectToAction("AdminPanel");
+            }
+
             // Check if the username exists in the database
             var user = _context.Users.FirstOrDefault(u => u.Username == username);
 
             if (user != null)
             {
-                // Validate the password
+                
                 if (user.Password == password)
                 {
-                    // Redirect to the home page if login is successful
+                    
                     return RedirectToAction("Index", "Home");
                 }
                 else
                 {
-                    // Display an error message for invalid password
+                    
                     ViewBag.ErrorMessage = "Incorrect password. Please try again.";
                 }
             }
@@ -58,46 +98,11 @@ namespace communityApp.Controllers
             return View();
         }
 
-        // Render the sign-up page
-        [HttpGet]
-        public IActionResult sign_Up()
-        {
-            return View();
-        }
-
-        // Handle sign-up form submission
-        [HttpPost]
-        public IActionResult sign_up(User user)
-        {
-            if (ModelState.IsValid)
-            {
-                // Check if the username already exists in the database
-                bool usernameExists = _context.Users.Any(u => u.Username == user.Username);
-                if (usernameExists)
-                {
-                    ViewBag.ErrorMessage = "This username is already taken. Please choose a different one.";
-                    return View(user);
-                }
-
-                // Save the new user to the database
-                _context.Users.Add(user);
-                _context.SaveChanges();
-
-                ViewBag.SuccessMessage = "Registration completed successfully! You can now log in.";
-                return RedirectToAction("Index");
-            }
-
-            // Return the view with validation errors
-            return View(user);
-        }
-
-        // Render the chat page
         public IActionResult Chat()
         {
             return View();
         }
 
-        // Render the contact page (GET request)
         [HttpGet]
         public IActionResult Contact()
         {
@@ -105,7 +110,7 @@ namespace communityApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Contact(contact contact)
+        public IActionResult Contact(contact contact) //CREATE OPERATION
         {
             if (ModelState.IsValid)
             {
