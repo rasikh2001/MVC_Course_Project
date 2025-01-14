@@ -10,6 +10,16 @@
     <div class="container mt-5">
         <h1 class="text-center">Admin Panel</h1>
 
+        <!-- Feedback Messages -->
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">@TempData["Error"]</div>
+        }
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">@TempData["Success"]</div>
+        }
+
         @if (Model == null || !Model.Any())
         {
             <p>No users found.</p>
@@ -38,6 +48,13 @@
                 </tbody>
             </table>
         }
+        <!-- Form for deleting a user -->
+        <div class="mt-4">
+            <form asp-action="DeleteUser" method="post" class="d-flex">
+                <input type="text" name="username" class="form-control me-2" placeholder="Enter username to delete" required />
+                <button type="submit" class="btn btn-danger">Delete User</button>
+            </form>
+        </div>
 
     </div>
 </body>

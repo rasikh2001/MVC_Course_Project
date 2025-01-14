@@ -11,10 +11,10 @@ namespace communityApp.Controllers
         private readonly AppDbContext _context;
 
         // Constructor to initialize logger and database context
-        public HomeController(ILogger<HomeController> logger, AppDbContext context)
+        public HomeController(ILogger<HomeController> logger, AppDbContext DB_context)
         {
             _logger = logger;
-            _context = context;
+            _context = DB_context;
         }
 
         public IActionResult Index()
@@ -32,9 +32,9 @@ namespace communityApp.Controllers
         {
             return View();
         }
-
+                                   //************** CRUD OPERATION BELOW ******************
         
-        [HttpPost]    //CREATE OPERATION 
+        [HttpPost]                                                  //CREATE OPERATION   1)
         public IActionResult sign_up(User user)
         {
             if (ModelState.IsValid)
@@ -53,7 +53,7 @@ namespace communityApp.Controllers
         }
 
         [HttpGet]
-              //READ OPERATION 
+                                                            //READ OPERATION    2) 
         public IActionResult AdminPanel()
         { 
             var users = _context.Users.ToList();
@@ -63,38 +63,46 @@ namespace communityApp.Controllers
 
 
         [HttpPost]
-        public IActionResult Login(string username, string password)
+        public async Task<IActionResult> DeleteUser(User user)  //DELETE OPERATION 3)
         {
-            // Check if the user is admin
-            if (username == "admin" && password == "admin")
-            {
-                // Redirect to the AdminPanel view
-                return RedirectToAction("AdminPanel");
-            }
+            // Find the user in the database using their username
+            var existingUser = await _context.Users.FindAsync(user.Username);
 
-            // Check if the username exists in the database
-            var user = _context.Users.FirstOrDefault(u => u.Username == username);
-
-            if (user != null)
+            if (existingUser != null)
             {
-                
-                if (user.Password == password)
-                {
-                    
-                    return RedirectToAction("Index", "Home");
-                }
-                else
-                {
-                    
-                    ViewBag.ErrorMessage = "Incorrect password. Please try again.";
-                }
+                // Remove the user from the database
+                _context.Users.Remove(existingUser);
+                await _context.SaveChangesAsync();
+
+                // Redirect to the AdminPanel view with a success message
+                TempData["Success"] = $"User '{user.Username}' has been deleted successfully.";
             }
             else
             {
-                // Display an error message if username is not found
-                ViewBag.ErrorMessage = "Username not found. Consider registering first.";
+                // Redirect to the AdminPanel view with an error message
+                TempData["Error"] = $"User '{user.Username}' not found.";
             }
 
+            return RedirectToAction("AdminPanel");
+        }
+
+
+
+        [HttpPost]
+        public IActionResult Login(string username, string password) //simple if else condition to render admin panel
+                                                                     //page
+        {
+            
+            if (username == "admin" && password == "admin")
+            {
+                
+                return RedirectToAction("AdminPanel");
+            }
+            else
+            {
+
+                ViewBag.ErrorMessage = "Incorrect password or username. Please try again.";
+            }
             return View();
         }
 
@@ -110,7 +118,7 @@ namespace communityApp.Controllers
         }
 
         [HttpPost]
-        public IActionResult Contact(contact contact) //CREATE OPERATION
+        public IActionResult Contact(contact contact) //CREATE OPERATION   1)
         {
             if (ModelState.IsValid)
             {
