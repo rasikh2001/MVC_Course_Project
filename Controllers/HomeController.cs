@@ -33,28 +33,30 @@ namespace communityApp.Controllers
             return View();
         }
                                    //************** CRUD OPERATION BELOW ******************
+
         
-        [HttpPost]                                                  //CREATE OPERATION   1)
-        public IActionResult sign_up(User user)
+        [HttpPost]//USING POST BECASUE WE ARE SENDING DATA TO DATABASE                        
+        public IActionResult sign_up(User user)//***************  CREATE  *******************
         {
             if (ModelState.IsValid)
             {
-              
-
                 _context.Users.Add(user);
                 _context.SaveChanges();
 
+                TempData["Username"] = user.Username; // STORE USERNAME
+
                 ViewBag.SuccessMessage = "Registration completed successfully! You can now log in.";
                 return RedirectToAction("Index");
+
             }
 
-         
             return View(user);
         }
 
-        [HttpGet]
-                                                            //READ OPERATION    2) 
-        public IActionResult AdminPanel()
+
+        [HttpGet] //USING GET BECAUSE WE ARE FETCHING FROM DATABASE
+                                         
+        public IActionResult AdminPanel() //***************  Read   *******************
         { 
             var users = _context.Users.ToList();
 
@@ -63,18 +65,18 @@ namespace communityApp.Controllers
 
 
         [HttpPost]
-        public async Task<IActionResult> DeleteUser(User user)  //DELETE OPERATION 3)
+        public async Task<IActionResult> DeleteUser(User user)  //***************  DELETE   *******************
         {
-            // Find the user in the database using their username
+           
             var existingUser = await _context.Users.FindAsync(user.Username);
 
             if (existingUser != null)
             {
-                // Remove the user from the database
+                
                 _context.Users.Remove(existingUser);
                 await _context.SaveChangesAsync();
 
-                // Redirect to the AdminPanel view with a success message
+        
                 TempData["Success"] = $"User '{user.Username}' has been deleted successfully.";
             }
             else

@@ -8,6 +8,7 @@
 </head>
 <body>
     <div class="container mt-5">
+<a href="@Url.Action("Login", "Home")" class="btn btn-secondary" style="margin-right: 20px;">Back to Login</a>
         <h1 class="text-center">Admin Panel</h1>
 
         <!-- Feedback Messages -->
@@ -42,7 +43,7 @@
                             <td>@user.Username</td>
                             <td>@user.Email</td>
                             <td>@user.FullName</td>
-                            <td>****</td> <!-- Hide password -->
+                            <td>@user.Password</td> <!-- Hide password -->
                         </tr>
                     }
                 </tbody>
